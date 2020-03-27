@@ -19,7 +19,7 @@ package com.google.common.graph;
 import com.google.common.graph.GraphConstants.Presence;
 
 /**
- * Configurable implementation of {@link MutableGraph} that supports both directed and undirected
+ * Standard implementation of {@link MutableGraph} that supports both directed and undirected
  * graphs. Instances of this class should be constructed with {@link GraphBuilder}.
  *
  * <p>Time complexities for mutation methods are all O(1) except for {@code removeNode(N node)},
@@ -28,12 +28,12 @@ import com.google.common.graph.GraphConstants.Presence;
  * @author James Sexton
  * @param <N> Node parameter type
  */
-final class ConfigurableMutableGraph<N> extends ForwardingGraph<N> implements MutableGraph<N> {
+final class StandardMutableGraph<N> extends ForwardingGraph<N> implements MutableGraph<N> {
   private final MutableValueGraph<N, Presence> backingValueGraph;
 
   /** Constructs a {@link MutableGraph} with the properties specified in {@code builder}. */
-  ConfigurableMutableGraph(AbstractGraphBuilder<? super N> builder) {
-    this.backingValueGraph = new ConfigurableMutableValueGraph<>(builder);
+  StandardMutableGraph(AbstractGraphBuilder<? super N> builder) {
+    this.backingValueGraph = new StandardMutableValueGraph<>(builder);
   }
 
   @Override

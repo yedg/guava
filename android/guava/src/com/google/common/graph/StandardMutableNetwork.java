@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /**
- * Configurable implementation of {@link MutableNetwork} that supports both directed and undirected
+ * Standard implementation of {@link MutableNetwork} that supports both directed and undirected
  * graphs. Instances of this class should be constructed with {@link NetworkBuilder}.
  *
  * <p>Time complexities for mutation methods are all O(1) except for {@code removeNode(N node)},
@@ -39,11 +39,11 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
  * @param <N> Node parameter type
  * @param <E> Edge parameter type
  */
-final class ConfigurableMutableNetwork<N, E> extends ConfigurableNetwork<N, E>
+final class StandardMutableNetwork<N, E> extends StandardNetwork<N, E>
     implements MutableNetwork<N, E> {
 
   /** Constructs a mutable graph with the properties specified in {@code builder}. */
-  ConfigurableMutableNetwork(NetworkBuilder<? super N, ? super E> builder) {
+  StandardMutableNetwork(NetworkBuilder<? super N, ? super E> builder) {
     super(builder);
   }
 
