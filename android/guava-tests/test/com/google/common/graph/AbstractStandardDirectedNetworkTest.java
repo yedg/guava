@@ -61,6 +61,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void nodes_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     Set<Integer> nodes = network.nodes();
     try {
       nodes.add(N2);
@@ -74,6 +76,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void edges_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     Set<String> edges = network.edges();
     try {
       edges.add(E12);
@@ -87,6 +91,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void incidentEdges_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N1);
     Set<String> incidentEdges = network.incidentEdges(N1);
     try {
@@ -101,6 +107,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void adjacentNodes_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N1);
     Set<Integer> adjacentNodes = network.adjacentNodes(N1);
     try {
@@ -114,6 +122,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
 
   @Override
   public void adjacentEdges_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addEdge(N1, N2, E12);
     Set<String> adjacentEdges = network.adjacentEdges(E12);
     try {
@@ -128,6 +138,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void edgesConnecting_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N1);
     addNode(N2);
     Set<String> edgesConnecting = network.edgesConnecting(N1, N2);
@@ -143,6 +155,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void inEdges_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N2);
     Set<String> inEdges = network.inEdges(N2);
     try {
@@ -157,6 +171,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void outEdges_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N1);
     Set<String> outEdges = network.outEdges(N1);
     try {
@@ -171,6 +187,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void predecessors_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N2);
     Set<Integer> predecessors = network.predecessors(N2);
     try {
@@ -185,6 +203,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   @Override
   @Test
   public void successors_checkReturnedSetMutability() {
+    assume().that(graphIsMutable()).isTrue();
+
     addNode(N1);
     Set<Integer> successors = network.successors(N1);
     try {
@@ -513,8 +533,9 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   }
 
   @Test
-  public void addEdge_parallelEdge() {
+  public void addEdge_parallelEdge_notAllowed() {
     assume().that(graphIsMutable()).isTrue();
+    assume().that(network.allowsParallelEdges()).isFalse();
 
     addEdge(N1, N2, E12);
     try {
@@ -523,6 +544,16 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
     } catch (IllegalArgumentException e) {
       assertThat(e).hasMessageThat().contains(ERROR_PARALLEL_EDGE);
     }
+  }
+
+  @Test
+  public void addEdge_parallelEdge_allowsParallelEdges() {
+    assume().that(graphIsMutable()).isTrue();
+    assume().that(network.allowsParallelEdges()).isTrue();
+
+    assertTrue(networkAsMutableNetwork.addEdge(N1, N2, E12));
+    assertTrue(networkAsMutableNetwork.addEdge(N1, N2, E12_A));
+    assertThat(network.edgesConnecting(N1, N2)).containsExactly(E12, E12_A);
   }
 
   @Test
@@ -565,8 +596,8 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
     assertTrue(networkAsMutableNetwork.addEdge(N1, N5, E15));
     assertTrue(networkAsMutableNetwork.addEdge(N4, N1, E41));
     assertTrue(networkAsMutableNetwork.addEdge(N2, N3, E23));
-    assertThat(network.nodes()).containsExactly(N1, N5, N4, N2, N3).inOrder();
-    assertThat(network.edges()).containsExactly(E15, E41, E23).inOrder();
+    assertThat(network.nodes()).containsExactly(N1, N5, N4, N2, N3);
+    assertThat(network.edges()).containsExactly(E15, E41, E23);
     assertThat(network.edgesConnecting(N1, N5)).containsExactly(E15);
     assertThat(network.edgesConnecting(N4, N1)).containsExactly(E41);
     assertThat(network.edgesConnecting(N2, N3)).containsExactly(E23);
@@ -623,9 +654,10 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
   }
 
   @Test
-  public void addEdge_parallelSelfLoopEdge() {
+  public void addEdge_parallelSelfLoopEdge_notAllowed() {
     assume().that(graphIsMutable()).isTrue();
     assume().that(network.allowsSelfLoops()).isTrue();
+    assume().that(network.allowsParallelEdges()).isFalse();
 
     addEdge(N1, N1, E11);
     try {
@@ -634,6 +666,17 @@ public abstract class AbstractStandardDirectedNetworkTest extends AbstractNetwor
     } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains(ERROR_PARALLEL_EDGE);
     }
+  }
+
+  @Test
+  public void addEdge_parallelSelfLoopEdge_allowsParallelEdges() {
+    assume().that(graphIsMutable()).isTrue();
+    assume().that(network.allowsSelfLoops()).isTrue();
+    assume().that(network.allowsParallelEdges()).isTrue();
+
+    assertTrue(networkAsMutableNetwork.addEdge(N1, N1, E11));
+    assertTrue(networkAsMutableNetwork.addEdge(N1, N1, E11_A));
+    assertThat(network.edgesConnecting(N1, N1)).containsExactly(E11, E11_A);
   }
 
   @Test

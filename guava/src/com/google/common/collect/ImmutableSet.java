@@ -60,6 +60,7 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
    * the stream contains duplicates (according to {@link Object#equals(Object)}), only the first
    * duplicate in encounter order will appear in the result.
    *
+   *
    * @since 21.0
    */
   public static <E> Collector<E, ?, ImmutableSet<E>> toImmutableSet() {
@@ -520,7 +521,6 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
       return this;
     }
 
-    @Override
     /**
      * Adds each element of {@code elements} to the {@code ImmutableSet}, ignoring duplicate
      * elements (only the first duplicate element is added).
@@ -529,6 +529,7 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
      * @return this {@code Builder} object
      * @throws NullPointerException if {@code elements} is null or contains a null element
      */
+    @Override
     @CanIgnoreReturnValue
     public Builder<E> addAll(Iterable<? extends E> elements) {
       super.addAll(elements);

@@ -31,8 +31,6 @@ import com.google.common.cache.AbstractCache.StatsCounter;
 import com.google.common.cache.LocalCache.Strength;
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.google.j2objc.annotations.J2ObjCIncompatible;
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ConcurrentModificationException;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -50,9 +48,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *   <li>automatic loading of entries into the cache
  *   <li>least-recently-used eviction when a maximum size is exceeded
  *   <li>time-based expiration of entries, measured since last access or last write
- *   <li>keys automatically wrapped in {@linkplain WeakReference weak} references
- *   <li>values automatically wrapped in {@linkplain WeakReference weak} or {@linkplain
- *       SoftReference soft} references
+ *   <li>keys automatically wrapped in {@code WeakReference}
+ *   <li>values automatically wrapped in {@code WeakReference} or {@code SoftReference}
  *   <li>notification of evicted (or otherwise removed) entries
  *   <li>accumulation of cache access statistics
  * </ul>
@@ -480,8 +477,8 @@ public final class CacheBuilder<K, V> {
         this.maximumWeight);
     checkState(
         this.maximumSize == UNSET_INT, "maximum size was already set to %s", this.maximumSize);
-    this.maximumWeight = maximumWeight;
     checkArgument(maximumWeight >= 0, "maximum weight must not be negative");
+    this.maximumWeight = maximumWeight;
     return this;
   }
 
