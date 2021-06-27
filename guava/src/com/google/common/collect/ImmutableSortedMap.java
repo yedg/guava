@@ -24,6 +24,7 @@ import static com.google.common.collect.Maps.keyOrNull;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.DoNotCall;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -38,6 +39,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import javax.annotation.CheckForNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -118,7 +120,11 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
     }
   }
 
-  /** Returns the empty sorted map. */
+  /**
+   * Returns the empty sorted map.
+   *
+   * <p><b>Performance note:</b> the instance returned is a singleton.
+   */
   @SuppressWarnings("unchecked")
   // unsafe, comparator() returns a comparator on the specified type
   // TODO(kevinb): evaluate whether or not of().comparator() should return null
@@ -232,8 +238,8 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   }
 
   /**
-   * Returns an immutable map containing the given entries, with keys sorted by the provided
-   * comparator.
+   * Returns an immutable map containing the given entries, with keys sorted by their natural
+   * ordering.
    *
    * <p>This method is not type-safe, as it may be called on a map with keys that are not mutually
    * comparable.
@@ -520,7 +526,8 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
     @Beta
     @Override
     @Deprecated
-    public Builder<K, V> orderEntriesByValue(Comparator<? super V> valueComparator) {
+    @DoNotCall("Always throws UnsupportedOperationException")
+    public final Builder<K, V> orderEntriesByValue(Comparator<? super V> valueComparator) {
       throw new UnsupportedOperationException("Not available on ImmutableSortedMap.Builder");
     }
 
@@ -581,6 +588,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   }
 
   @Override
+  @CheckForNull
   public V get(@Nullable Object key) {
     int index = keySet.indexOf(key);
     return (index == -1) ? null : valueList.get(index);
@@ -803,51 +811,61 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> lowerEntry(K key) {
     return headMap(key, false).lastEntry();
   }
 
   @Override
+  @CheckForNull
   public K lowerKey(K key) {
     return keyOrNull(lowerEntry(key));
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> floorEntry(K key) {
     return headMap(key, true).lastEntry();
   }
 
   @Override
+  @CheckForNull
   public K floorKey(K key) {
     return keyOrNull(floorEntry(key));
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> ceilingEntry(K key) {
     return tailMap(key, true).firstEntry();
   }
 
   @Override
+  @CheckForNull
   public K ceilingKey(K key) {
     return keyOrNull(ceilingEntry(key));
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> higherEntry(K key) {
     return tailMap(key, false).firstEntry();
   }
 
   @Override
+  @CheckForNull
   public K higherKey(K key) {
     return keyOrNull(higherEntry(key));
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> firstEntry() {
     return isEmpty() ? null : entrySet().asList().get(0);
   }
 
   @Override
+  @CheckForNull
   public Entry<K, V> lastEntry() {
     return isEmpty() ? null : entrySet().asList().get(size() - 1);
   }
@@ -861,6 +879,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   @CanIgnoreReturnValue
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final Entry<K, V> pollFirstEntry() {
     throw new UnsupportedOperationException();
   }
@@ -874,6 +893,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   @CanIgnoreReturnValue
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final Entry<K, V> pollLastEntry() {
     throw new UnsupportedOperationException();
   }

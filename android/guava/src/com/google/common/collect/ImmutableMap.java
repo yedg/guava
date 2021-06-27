@@ -24,6 +24,7 @@ import static com.google.common.collect.CollectPreconditions.checkNonnegative;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.DoNotCall;
 import com.google.errorprone.annotations.DoNotMock;
 import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.google.j2objc.annotations.RetainedWith;
@@ -38,6 +39,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
+import javax.annotation.CheckForNull;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 /**
@@ -60,6 +62,8 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
    * Returns the empty map. This map behaves and performs comparably to {@link
    * Collections#emptyMap}, and is preferable mainly for consistency and maintainability of your
    * code.
+   *
+   * <p><b>Performance note:</b> the instance returned is a singleton.
    */
   @SuppressWarnings("unchecked")
   public static <K, V> ImmutableMap<K, V> of() {
@@ -462,6 +466,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   @CanIgnoreReturnValue
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final V put(K k, V v) {
     throw new UnsupportedOperationException();
   }
@@ -487,6 +492,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
    */
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final void putAll(Map<? extends K, ? extends V> map) {
     throw new UnsupportedOperationException();
   }
@@ -499,6 +505,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
    */
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final void clear() {
     throw new UnsupportedOperationException();
   }
@@ -520,6 +527,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
 
   // Overriding to mark it Nullable
   @Override
+  @CheckForNull
   public abstract V get(@NullableDecl Object key);
 
   /**

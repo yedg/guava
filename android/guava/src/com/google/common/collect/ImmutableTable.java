@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.DoNotCall;
 import com.google.errorprone.annotations.DoNotMock;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -42,7 +43,12 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 @GwtCompatible
 public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V>
     implements Serializable {
-  /** Returns an empty immutable table. */
+
+  /**
+   * Returns an empty immutable table.
+   *
+   * <p><b>Performance note:</b> the instance returned is a singleton.
+   */
   @SuppressWarnings("unchecked")
   public static <R, C, V> ImmutableTable<R, C, V> of() {
     return (ImmutableTable<R, C, V>) SparseImmutableTable.EMPTY;
@@ -322,6 +328,7 @@ public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V>
    */
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final void clear() {
     throw new UnsupportedOperationException();
   }
@@ -335,6 +342,7 @@ public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V>
   @CanIgnoreReturnValue
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final V put(R rowKey, C columnKey, V value) {
     throw new UnsupportedOperationException();
   }
@@ -347,6 +355,7 @@ public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V>
    */
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final void putAll(Table<? extends R, ? extends C, ? extends V> table) {
     throw new UnsupportedOperationException();
   }
@@ -360,6 +369,7 @@ public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V>
   @CanIgnoreReturnValue
   @Deprecated
   @Override
+  @DoNotCall("Always throws UnsupportedOperationException")
   public final V remove(Object rowKey, Object columnKey) {
     throw new UnsupportedOperationException();
   }

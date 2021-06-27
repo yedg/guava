@@ -23,6 +23,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.DoNotCall;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -59,7 +60,11 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
     return CollectCollectors.toImmutableBiMap(keyFunction, valueFunction);
   }
 
-  /** Returns the empty bimap. */
+  /**
+   * Returns the empty bimap.
+   *
+   * <p><b>Performance note:</b> the instance returned is a singleton.
+   */
   // Casting to any type is safe because the set will never hold any elements.
   @SuppressWarnings("unchecked")
   public static <K, V> ImmutableBiMap<K, V> of() {
@@ -401,7 +406,8 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableBiMapFauxverideShim<
   @CanIgnoreReturnValue
   @Deprecated
   @Override
-  public V forcePut(K key, V value) {
+  @DoNotCall("Always throws UnsupportedOperationException")
+  public final V forcePut(K key, V value) {
     throw new UnsupportedOperationException();
   }
 
